@@ -1,0 +1,145 @@
+﻿<Window x:Class="Hotel_Pere_Maria.Views.listReservas"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Hotel_Pere_Maria.Views"
+        mc:Ignorable="d"
+        Title="listReservas" Height="650" Width="1000"
+        WindowStartupLocation="CenterScreen" Background="#F5F6F7">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border>
+            <TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20" FontFamily="Segoe UI Black">Listado de Reservas</TextBlock>
+        </Border>
+
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Opacity="1" ShadowDepth="1"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="Filtros de Búsqueda" FontWeight="Bold" FontSize="14" Foreground="#2C3E50" Margin="0,0,0,15"/>
+
+                <UniformGrid Columns="4">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="ID Reserva" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,3"/>
+                        <TextBox Height="30" VerticalContentAlignment="Center" Text="{Binding FiltroId, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="5">
+                        <TextBlock Text="Cliente" FontSize="11" Margin="0,0,0,3" FontWeight="SemiBold"/>
+                        <TextBox Height="30" VerticalContentAlignment="Center" Text="{Binding FiltroUser, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SeleccionarClienteCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="5">
+                        <TextBlock Text="Habitación" FontSize="11" Margin="0,0,0,3" FontWeight="SemiBold"/>
+                        <TextBox Height="30" VerticalContentAlignment="Center" Text="{Binding FiltroRoom, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SeleccionarRoomCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="5" VerticalAlignment="Center" Orientation="Horizontal">
+                        <CheckBox Content="Ver Canceladas" VerticalAlignment="Center" Margin="0,15,0,0" IsChecked="{Binding VerCanceladas}" FontWeight="SemiBold"/>
+                        <CheckBox Content="Ver Vencidas" VerticalAlignment="Center" Margin="15,15,0,0" IsChecked="{Binding VerVencidas}" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    
+                </UniformGrid>
+
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="5">
+                        <TextBlock Text="Check-In Desde" FontSize="11" FontWeight="SemiBold"/>
+                        <DatePicker SelectedDate="{Binding FechaDesde}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="5">
+                        <TextBlock Text="Check-In Hasta" FontSize="11" FontWeight="SemiBold"/>
+                        <DatePicker SelectedDate="{Binding FechaHasta}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="15,5">
+                        <DockPanel>
+                            <TextBlock Text="Rango de Precio:" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding PrecioMin, StringFormat={}{0:N0}€}" FontSize="11" FontWeight="Bold" DockPanel.Dock="Left" Margin="10,0,0,0"/>
+                            <TextBlock Text=" - " FontSize="11" DockPanel.Dock="Left"/>
+                            <TextBlock Text="{Binding PrecioMax, StringFormat={}{0:N0}€}" FontSize="11" FontWeight="Bold" DockPanel.Dock="Left"/>
+                        </DockPanel>
+                        <Grid>
+                            <Slider Minimum="0" Maximum="5000" Value="{Binding PrecioMin}" Margin="0,5"/>
+                            <Slider Minimum="0" Maximum="5000" Value="{Binding PrecioMax}" Margin="0,20,0,0"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <Button Grid.Column="3" Content="Limpiar" Command="{Binding LimpiarFiltrosCommand}" 
+                            Width="80" Height="35" VerticalAlignment="Bottom" Margin="5"
+                            Background="#E74C3C" Foreground="White" FontWeight="Bold">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="10">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Opacity="1" ShadowDepth="1"/>
+            </Border.Effect>
+            <DataGrid ItemsSource="{Binding ReservasFiltradas}"
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="#F0F0F0"
+                      RowHeight="40"
+                      Background="White"
+                      BorderThickness="0">
+                <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" 
+                                  Command="{Binding ModificarReservaCommand}" 
+                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=SelectedItem}"/>
+                </DataGrid.InputBindings>
+
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#34495E"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Padding" Value="10,5"/>
+                        <Setter Property="Height" Value="40"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding reservation_id}" Width="*" FontWeight="SemiBold"/>
+                    <DataGridTextColumn Header="Habitación" Binding="{Binding room_id}" Width="*"/>
+                    <DataGridTextColumn Header="Usuario" Binding="{Binding user_id}" Width="*"/>
+                    <DataGridTextColumn Header="Entrada" Binding="{Binding check_in, StringFormat='dd/MM/yyyy'}" Width="*"/>
+                    <DataGridTextColumn Header="Salida" Binding="{Binding check_out, StringFormat='dd/MM/yyyy'}" Width="*"/>
+                    <DataGridTextColumn Header="Precio" Binding="{Binding price, StringFormat={}{0:N2}€}" Width="*"/>
+                    <DataGridTextColumn Header="Creado Por" Binding="{Binding createdBy}" Width="*"/>
+                    <DataGridTextColumn Header="Fecha Cancelación" Binding="{Binding cancelation_date, StringFormat='dd/MM/yyyy'}" Width="*"/>
+                    
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</Window>

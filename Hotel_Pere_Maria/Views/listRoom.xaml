@@ -1,0 +1,301 @@
+﻿<Window x:Class="Hotel_Pere_Maria.Views.listRoom"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Hotel_Pere_Maria.Views"
+        mc:Ignorable="d"
+        Title="listRoom" Height="700" Width="1030">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TÍTULO (igual que el estilo bueno) -->
+        <Border>
+            <TextBlock Name="txtInfo"
+                   Text="Listado de Habitaciones"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"
+                   FontFamily="Segoe UI Black"/>
+        </Border>
+
+        <!-- FILTROS (CARD estilo reservas/rooms) -->
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Opacity="0.1" ShadowDepth="1"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="Filtros de Búsqueda"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Foreground="#2C3E50"
+                       Margin="0,0,0,15"/>
+
+                <!-- Fila 1 (4 columnas) -->
+                <UniformGrid Columns="4">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="ID Habitación" FontSize="11" Margin="0,0,0,3"/>
+                        <TextBox x:Name="txtIdRoom"
+                             Height="30"
+                             VerticalContentAlignment="Center"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="5">
+                        <TextBlock Text="Tipo (Individual/Doble/Suite...)" FontSize="11" Margin="0,0,0,3"/>
+                        <ComboBox Height="30" Name="cmbType" 
+                                  SelectedValuePath="Content"
+                                  SelectedValue="{Binding SelectedType, UpdateSourceTrigger=PropertyChanged}">
+                            <ComboBoxItem Content="Individual"/>
+                            <ComboBoxItem Content="Doble"/>
+                            <ComboBoxItem Content="Suite"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="5" VerticalAlignment="Center">
+                        <CheckBox x:Name="chkSoloDisponibles"
+                               Content="Solo disponibles"
+                               VerticalAlignment="Center"
+                               Margin="0,15,0,0"
+                               IsChecked="{Binding OnlyAvailable}"/>
+                    </StackPanel>
+                </UniformGrid>
+
+                <!-- Fila 2 + Botón limpiar -->
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Capacidad mínima -->
+                    <StackPanel Grid.Column="0" Margin="5">
+                        <TextBlock Text="Capacidad mínima" FontSize="11" Margin="0,0,0,3"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Slider x:Name="sldCapMin"
+                    Minimum="1"
+                    Maximum="10"
+                    Value="{Binding MinCapacity, Mode=TwoWay}"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
+                    Width="180"/>
+                            <TextBlock Text="{Binding Value, ElementName=sldCapMin, StringFormat={}{0:0}}"
+                       Margin="10,0,0,0"
+                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Precio mínimo -->
+                    <StackPanel Grid.Column="1" Margin="5">
+                        <TextBlock Text="Precio mín." FontSize="11" Margin="0,0,0,3"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Slider x:Name="sldPrecioMin"
+                    Minimum="0"
+                    Maximum="1000"
+                    Value="{Binding MinPrice, Mode=TwoWay}"
+                    TickFrequency="10"
+                    IsSnapToTickEnabled="True"
+                    Width="180"/>
+                            <TextBlock Text="{Binding Value, ElementName=sldPrecioMin, StringFormat={}{0:0}€}"
+                       Margin="10,0,0,0"
+                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Precio máximo -->
+                    <StackPanel Grid.Column="2" Margin="5">
+                        <TextBlock Text="Precio máx." FontSize="11" Margin="0,0,0,3"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Slider x:Name="sldPrecioMax"
+                                Minimum="0"
+                                Maximum="1000"
+                                Value="{Binding MaxPrice, Mode=TwoWay}"
+                                TickFrequency="10"
+                                IsSnapToTickEnabled="True"
+                                Width="180"/>
+                            <TextBlock Text="{Binding Value, ElementName=sldPrecioMax, StringFormat={}{0:0}€}"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"/> 
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5">
+                        <Button Content="Crear"
+                            Click="BtnCrear_Click"
+                            Width="80"
+                            Height="35"
+                            Margin="0,0,8,0"
+                            Background="#2ECC71"
+                            Foreground="White"
+                            FontWeight="Bold">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Content="Limpiar"
+                            Command="{Binding LimpiarFiltrosCommand}"
+                            Width="80"
+                            Height="35"
+                            Background="#E74C3C"
+                            Foreground="White"
+                            FontWeight="Bold">      
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- TABLA (CARD estilo reservas/rooms) -->
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="10">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Opacity="0.1" ShadowDepth="1"/>
+            </Border.Effect>
+
+            <ListView x:Name="lvRooms"
+              ItemsSource="{Binding Rooms}"
+              SelectedItem="{Binding SelectedRoom, Mode=TwoWay}"
+              BorderThickness="0"
+              Background="Transparent"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                <!-- Rejilla tipo cards -->
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <!-- Estilo + selección + doble click (TODO en UNO) -->
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Margin" Value="10"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Background" Value="Transparent"/>
+
+                        <!-- Doble click -->
+                        <EventSetter Event="MouseDoubleClick" Handler="LvRooms_MouseDoubleClick"/>
+
+                        <!-- Plantilla para pintar selección (borde azul + fondo suave) -->
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border x:Name="Bd"
+                                    CornerRadius="12"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="2">
+                                        <ContentPresenter/>
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#3498DB"/>
+                                            <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                                            <Setter TargetName="Bd" Property="Background" Value="#F2F8FF"/>
+                                        </Trigger>
+
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#D0D7DE"/>
+                                            <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <!-- Card -->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="280"
+                        CornerRadius="12"
+                        Background="White"
+                        Padding="14"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="140"/> <!-- Imagen -->
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Imagen -->
+                                <Border Grid.Row="0" CornerRadius="8" Margin="0,0,0,10">
+                                    <Image Source="{Binding Image}" Stretch="UniformToFill"/>
+                                </Border>
+
+                                <!-- Cabecera -->
+                                <StackPanel Grid.Row="1">
+                                    <TextBlock Text="{Binding Type}"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="#34495E"/>
+                                    <TextBlock Text="{Binding RoomId, StringFormat=ID: {0}}"
+                                       Foreground="#7F8C8D"
+                                       FontSize="12"
+                                       Margin="0,2,0,0"/>
+                                </StackPanel>
+
+                                <!-- Datos -->
+                                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                                    <TextBlock Text="Máx: " Foreground="#7F8C8D"/>
+                                    <TextBlock Text="{Binding MaxOccupancy}" FontWeight="SemiBold" Foreground="#34495E"/>
+                                    <TextBlock Text="   |   " Foreground="#BDC3C7" Margin="8,0"/>
+                                    <TextBlock Text="{Binding Rate, StringFormat=Rate: {0}}" Foreground="#34495E"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,6,0,0">
+                                    <TextBlock Text="Precio/noche: " Foreground="#7F8C8D"/>
+                                    <TextBlock Text="{Binding PricePerNight, StringFormat={}{0} €}"
+                                       FontWeight="SemiBold"
+                                       Foreground="#2C3E50"/>
+                                </StackPanel>
+
+                                <!-- Disponible -->
+                                <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,10,0,0">
+                                    <TextBlock Text="Disponible: " Foreground="#7F8C8D"/>
+                                    <CheckBox IsChecked="{Binding IsAvailable}" IsEnabled="False"/>
+                                </StackPanel>
+
+                                <!-- Descripción -->
+                                <TextBlock Grid.Row="5"
+                                   Text="{Binding Description}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#34495E"
+                                   Margin="0,10,0,0"
+                                   MaxHeight="60"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
+    </Grid>
+</Window>
