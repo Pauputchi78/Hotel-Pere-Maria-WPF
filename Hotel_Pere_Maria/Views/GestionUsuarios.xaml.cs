@@ -43,7 +43,7 @@ namespace Hotel_Pere_Maria.Views
                 // Si esta ventana fue abierta desde otra ventana (como selector)
                 if (this.Owner != null)
                 {
-                    if (this.Owner is addReserva || this.Owner is modReserva || this.Owner is listReservas)
+                    if (this.Owner is addReserva || this.Owner is modReserva || this.Owner is listReservas || this.Owner is ListaFacturas)
                     {
                         UsuarioSeleccionado = usuario;
                         this.DialogResult = true;

@@ -9,7 +9,7 @@ namespace Hotel_Pere_Maria
     {
         private LoginViewModel _viewModel;
 
-        public MainWindow()
+      public MainWindow()
         {
             InitializeComponent();
 

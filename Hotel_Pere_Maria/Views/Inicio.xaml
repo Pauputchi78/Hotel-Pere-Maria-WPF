@@ -30,6 +30,11 @@
                     <MenuItem Header="Lista de reservas" Command="{Binding AbrirAllReservasCommand}"/>
                 </MenuItem>
 
+                <MenuItem Header="Facturación" FontSize="14" Padding="10,5">
+                    <MenuItem Header="Lista de facturas" Command="{Binding AbrirTodasLasFacturas}"/>
+                    <MenuItem Header="Ajustes Facturación" Command="{Binding AbrirAllReservasCommand}"/>
+                </MenuItem>
+
                 <MenuItem DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">

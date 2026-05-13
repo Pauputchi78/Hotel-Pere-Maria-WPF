@@ -45,6 +45,8 @@ namespace Hotel_Pere_Maria.ViewModels
         public ICommand CerrarSesionCommand { get; }
         public ICommand AbrirPerfilCommand { get; }
         public ICommand AbrirAllRoomsCommand { get; }
+        public ICommand AbrirAjustesFacturación { get; }
+        public ICommand AbrirTodasLasFacturas { get; }
 
         public InicioViewModel()
         {
@@ -55,6 +57,7 @@ namespace Hotel_Pere_Maria.ViewModels
             CerrarSesionCommand = new RelayCommand(async () => await ExecuteLogout());
             AbrirPerfilCommand = new RelayCommand(ExecuteAbrirPerfil);
             AbrirAllRoomsCommand = new RelayCommand(() => new listRoom().ShowDialog());
+            AbrirTodasLasFacturas = new RelayCommand(async () => new ListaFacturas().ShowDialog());
 
             _ = CargarTodo(); // Carga inicial
         }
