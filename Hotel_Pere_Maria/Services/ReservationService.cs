@@ -2,16 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Hotel_Pere_Maria.Models;
+using Microsoft.Win32;
+using System.IO;
 
 namespace Hotel_Pere_Maria.Services
 {
     public static class ReservationService
     {
+        public static async Task<string> DescargarFacturaPdf(string reservationId)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+
+                var response = await ApiService._httpClient.GetAsync(ApiService.BaseUrl + $"reservation/{reservationId}/invoice");
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leemos el contenido como un arreglo de bytes
+                    byte[] pdfContent = await response.Content.ReadAsByteArrayAsync();
+
+                    // Preguntamos al usuario dónde guardarlo
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
+                    saveFileDialog.FileName = $"Factura_{reservationId}.pdf";
+
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        File.WriteAllBytes(saveFileDialog.FileName, pdfContent);
+                        return saveFileDialog.FileName;
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se pudo generar la factura. Verifique si la reserva está finalizada."+ response.RequestMessage);
+                }
+            }
+            return null;
+        }
         public static async Task<(bool exito, string mensaje, double precio)> getCancelationPrice(string reservation_id, DateTime? cancelation_date)
         {
             try

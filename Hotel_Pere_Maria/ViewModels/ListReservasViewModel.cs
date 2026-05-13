@@ -119,7 +119,38 @@ namespace Hotel_Pere_Maria.ViewModels
             }
             else
             {
-                MessageBox.Show("No es posible modificar una reserva cancelada o vencida");
+                MessageBoxResult resultado = MessageBox.Show("No es posible modificar esta reserva./nDesa realizar la factura de esta reserva?", "Reserva Vencida", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                // 3. Evaluamos la respuesta
+                if (resultado == MessageBoxResult.Yes)
+                {
+                    // Si el usuario pulsa 'Sí', llamamos al método de descargar factura
+                    try
+                    {
+                        // Mostramos un mensaje de espera si quieres
+                        string filePath = await ReservationService.DescargarFacturaPdf(res.reservation_id);
+
+                        if (filePath != null)
+                        {
+                            MessageBox.Show("Factura guardada con éxito.");
+
+                            // Abrir el PDF automáticamente después de descargarlo
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath)
+                            {
+                                UseShellExecute = true
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    // Si el usuario pulsa 'No', simplemente no cerramos el aviso
+                    return;
+                }
             }
         }
 

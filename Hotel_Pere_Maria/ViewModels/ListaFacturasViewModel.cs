@@ -106,7 +106,27 @@ namespace Hotel_Pere_Maria.ViewModels
         {
             if (res == null) return;
 
-            MessageBox.Show("Descargando facura");
+            try
+            {
+                // Mostramos un mensaje de espera si quieres
+                string filePath = await ReservationService.DescargarFacturaPdf(res.reservation_id);
+
+                if (filePath != null)
+                {
+                    MessageBox.Show("Factura guardada con éxito.");
+
+                    // Abrir el PDF automáticamente después de descargarlo
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath)
+                    {
+                        UseShellExecute = true
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+
         }
 
         private void ExecuteSeleccionarCliente()
