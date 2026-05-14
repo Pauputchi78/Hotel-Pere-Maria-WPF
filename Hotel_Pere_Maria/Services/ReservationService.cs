@@ -25,13 +25,25 @@ namespace Hotel_Pere_Maria.Services
 
                 if (response.IsSuccessStatusCode)
                 {
+                    string nombreDesdeApi = response.Content.Headers.ContentDisposition?.FileName;
+
+                    // Limpiamos comillas si las trae (ej: "factura-F2026.pdf" -> factura-F2026.pdf)
+                    if (!string.IsNullOrEmpty(nombreDesdeApi))
+                    {
+                        nombreDesdeApi = nombreDesdeApi.Trim('"');
+                    }
+                    else
+                    {
+                        // Nombre de emergencia si la cabecera fallara
+                        nombreDesdeApi = $"Factura_{reservationId}.pdf";
+                    }
                     // Leemos el contenido como un arreglo de bytes
                     byte[] pdfContent = await response.Content.ReadAsByteArrayAsync();
 
                     // Preguntamos al usuario dónde guardarlo
                     SaveFileDialog saveFileDialog = new SaveFileDialog();
                     saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
-                    saveFileDialog.FileName = $"Factura_{reservationId}.pdf";
+                    saveFileDialog.FileName = nombreDesdeApi;
 
                     if (saveFileDialog.ShowDialog() == true)
                     {
