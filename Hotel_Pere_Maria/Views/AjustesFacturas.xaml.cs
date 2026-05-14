@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Hotel_Pere_Maria.ViewModels;
 
 namespace Hotel_Pere_Maria.Views
 {
@@ -22,6 +23,7 @@ namespace Hotel_Pere_Maria.Views
         public AjustesFacturas()
         {
             InitializeComponent();
+            this.DataContext = new AjustesFacturaViewModel();
         }
     }
 }

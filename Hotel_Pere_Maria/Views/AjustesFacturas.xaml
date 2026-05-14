@@ -5,8 +5,67 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Pere_Maria.Views"
         mc:Ignorable="d"
-        Title="AjustesFacturas" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="AjustesFacturas" Height="600" Width="500"
+        WindowStartupLocation="CenterScreen" Background="#F5F6F7">
+
+    <Border Background="White" CornerRadius="10" Padding="20" Margin="20" BorderBrush="#DDDDDD" BorderThickness="1" MaxWidth="400" VerticalAlignment="Center">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="15" Opacity="1" ShadowDepth="1"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Datos de Cabecera de Factura" 
+                       FontSize="18" FontWeight="Bold" Foreground="#2C3E50" 
+                       Margin="0,0,0,10" HorizontalAlignment="Center"/>
+
+            <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="2"/>
+                </Border.Effect>
+
+                    <StackPanel>
+                        <TextBlock Text="Nombre del Hotel" FontWeight="SemiBold" Margin="0,5,0,2"/>
+                        <TextBox Text="{Binding NombreHotel}" Height="30" VerticalContentAlignment="Center"/>
+
+                        <TextBlock Text="NIF / CIF" FontWeight="SemiBold" Margin="0,10,0,2"/>
+                        <TextBox Text="{Binding Nif}" Height="30" VerticalContentAlignment="Center"/>
+
+                        <TextBlock Text="Dirección" FontWeight="SemiBold" Margin="0,10,0,2"/>
+                        <TextBox Text="{Binding Direccion}" Height="30" VerticalContentAlignment="Center"/>
+
+                        <UniformGrid Columns="2" Margin="0,10,0,0">
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="Teléfono" FontWeight="SemiBold" Margin="0,0,0,2"/>
+                            <TextBox Text="{Binding Telefono, UpdateSourceTrigger=PropertyChanged}" Height="30" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="Código Postal" FontWeight="SemiBold" Margin="0,0,0,2"/>
+                            <TextBox Text="{Binding CodigoPostal, UpdateSourceTrigger=PropertyChanged}" Height="30" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <TextBlock Text="Ciudad" FontWeight="SemiBold" Margin="0,10,0,2"/>
+                        <TextBox Text="{Binding Ciudad}" Height="30" VerticalContentAlignment="Center"/>
+
+                        <TextBlock Text="Provincia" FontWeight="SemiBold" Margin="0,10,0,2"/>
+                        <TextBox Text="{Binding Provincia}" Height="30" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="Cancelar" Width="100" Height="35" Margin="0,0,10,0" 
+                        Background="#BDC3C7" Foreground="White" BorderThickness="0"
+                        Command="{Binding CancelarCommand}"/>
+
+                <Button Content="Guardar Cambios" Width="130" Height="35" 
+                        Background="#2D52A2" Foreground="White" FontWeight="Bold" BorderThickness="0"
+                        Command="{Binding GuardarCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

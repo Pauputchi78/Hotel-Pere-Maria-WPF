@@ -119,7 +119,7 @@ namespace Hotel_Pere_Maria.ViewModels
             }
             else
             {
-                MessageBoxResult resultado = MessageBox.Show("No es posible modificar esta reserva./nDesa realizar la factura de esta reserva?", "Reserva Vencida", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult resultado = MessageBox.Show("No es posible modificar esta reserva.\nDesa realizar la factura de esta reserva?", "Reserva Vencida", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 // 3. Evaluamos la respuesta
                 if (resultado == MessageBoxResult.Yes)
