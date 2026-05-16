@@ -12,6 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Border>
             <TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20" FontFamily="Segoe UI Black">Listado de Reservas</TextBlock>
@@ -105,6 +106,7 @@
                 <DropShadowEffect BlurRadius="15" Opacity="1" ShadowDepth="1"/>
             </Border.Effect>
             <DataGrid ItemsSource="{Binding ReservasFiltradas}"
+                      SelectedItem="{Binding ReservaSeleccionada}"
                       AutoGenerateColumns="False" 
                       IsReadOnly="True"
                       GridLinesVisibility="Horizontal"
@@ -112,11 +114,6 @@
                       RowHeight="40"
                       Background="White"
                       BorderThickness="0">
-                <DataGrid.InputBindings>
-                <MouseBinding MouseAction="LeftDoubleClick" 
-                                  Command="{Binding ModificarReservaCommand}" 
-                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=SelectedItem}"/>
-                </DataGrid.InputBindings>
 
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
@@ -137,9 +134,41 @@
                     <DataGridTextColumn Header="Precio" Binding="{Binding price, StringFormat={}{0:N2}€}" Width="*"/>
                     <DataGridTextColumn Header="Creado Por" Binding="{Binding createdBy}" Width="*"/>
                     <DataGridTextColumn Header="Fecha Cancelación" Binding="{Binding cancelation_date, StringFormat='dd/MM/yyyy'}" Width="*"/>
-                    
+
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,5">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Height" Value="38"/>
+                    <Setter Property="Width" Value="140"/>
+                    <Setter Property="Margin" Value="10,0,0,0"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Style.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </StackPanel.Resources>
+
+            <Button Content="Ver Historial" 
+                    Background="#2C3E50"
+                    Command="{Binding VerHistorialCommand}"
+                    CommandParameter="{Binding ReservaSeleccionada}"/>
+
+            <Button Content="Generar Factura" 
+                    Background="#3498DB"
+                    Command="{Binding GenerarFacturaCommand}"
+                    CommandParameter="{Binding ReservaSeleccionada}"/>
+
+            <Button Content="Modificar Reserva" 
+                    Background="#2ECC71"
+                    Command="{Binding ModificarReservaCommand}"
+                    CommandParameter="{Binding ReservaSeleccionada}"/>
+        </StackPanel>
     </Grid>
 </Window>

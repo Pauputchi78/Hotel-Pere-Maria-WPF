@@ -16,6 +16,17 @@ namespace Hotel_Pere_Maria.ViewModels
         private List<Reservation> _todasLasReservas;
         private List<Reservation> _reservasFiltradas;
 
+        private Reservation _reservaSeleccionada;
+        public Reservation ReservaSeleccionada
+        {
+            get => _reservaSeleccionada;
+            set
+            {
+                _reservaSeleccionada = value;
+                OnPropertyChanged(nameof(ReservaSeleccionada));
+            }
+        }
+
         // Propiedades de Filtro
         private string _fId;
         private string _fUser;
@@ -50,6 +61,8 @@ namespace Hotel_Pere_Maria.ViewModels
         public ICommand ModificarReservaCommand { get; }
         public ICommand SeleccionarClienteCommand { get; }
         public ICommand SeleccionarRoomCommand { get;  }
+        public ICommand GenerarFacturaCommand { get; }
+        public ICommand VerHistorialCommand { get; }
 
         public ListReservasViewModel()
         {
@@ -57,6 +70,8 @@ namespace Hotel_Pere_Maria.ViewModels
             ModificarReservaCommand = new RelayCommand<Reservation>(async (r) => await ExecuteModificar(r));
             SeleccionarClienteCommand = new RelayCommand(ExecuteSeleccionarCliente);
             SeleccionarRoomCommand = new RelayCommand(ExecuteSeleccionarRoom);
+            GenerarFacturaCommand = new RelayCommand<Reservation>(async (r) => await ExecuteGenerarFactura(r));
+            VerHistorialCommand = new RelayCommand<Reservation>(async (r) => await ExecuteVerHistorial(r));
 
             _ = CargarReservas(); // Carga inicial asíncrona
         }
@@ -109,7 +124,10 @@ namespace Hotel_Pere_Maria.ViewModels
 
         private async Task ExecuteModificar(Reservation res)
         {
-            if (res == null) return;
+            if (res == null) {
+                MessageBox.Show("Para realizar esta acción primero seleccióna una reserva.", "Seleccióna una Reserva");
+                return;
+            } 
 
             if (res.cancelation_date == null && res.check_out > DateTime.Now)
             {
@@ -119,38 +137,8 @@ namespace Hotel_Pere_Maria.ViewModels
             }
             else
             {
-                MessageBoxResult resultado = MessageBox.Show("No es posible modificar esta reserva.\nDesa realizar la factura de esta reserva?", "Reserva Vencida", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBox.Show("No es posible modificar esta reserva.", "Reserva Vencida");
 
-                // 3. Evaluamos la respuesta
-                if (resultado == MessageBoxResult.Yes)
-                {
-                    // Si el usuario pulsa 'Sí', llamamos al método de descargar factura
-                    try
-                    {
-                        // Mostramos un mensaje de espera si quieres
-                        string filePath = await ReservationService.DescargarFacturaPdf(res.reservation_id);
-
-                        if (filePath != null)
-                        {
-                            MessageBox.Show("Factura guardada con éxito.");
-
-                            // Abrir el PDF automáticamente después de descargarlo
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath)
-                            {
-                                UseShellExecute = true
-                            });
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    // Si el usuario pulsa 'No', simplemente no cerramos el aviso
-                    return;
-                }
             }
         }
 
@@ -172,6 +160,70 @@ namespace Hotel_Pere_Maria.ViewModels
             if (result == true && win.SelectedRoomResult != null)
             {
                 FiltroRoom = win.SelectedRoomResult.RoomId;
+            }
+        }
+
+        private async Task ExecuteGenerarFactura(Reservation res) {
+            if (res == null)
+            {
+                MessageBox.Show("Para realizar esta acción primero seleccióna una reserva.", "Seleccióna una Reserva");
+                return;
+            }
+
+            if (res.cancelation_date == null && res.check_out > DateTime.Now)
+            {
+                MessageBox.Show("No es posible generar factura de una reserva activa", "Reserva Activa");
+            }
+            else
+            {
+                try
+                {
+                    // Mostramos un mensaje de espera si quieres
+                    string filePath = await ReservationService.DescargarFacturaPdf(res.reservation_id);
+
+                    if (filePath != null)
+                    {
+                        MessageBox.Show("Factura guardada con éxito.");
+
+                        // Abrir el PDF automáticamente después de descargarlo
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath)
+                        {
+                            UseShellExecute = true
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}");
+                }
+            }
+        }
+        private async Task ExecuteVerHistorial(Reservation res)
+        {
+            if (res == null)
+            {
+                MessageBox.Show("Para realizar esta acción primero seleccióna una reserva.", "Seleccióna una Reserva");
+                return;
+            }
+
+            try
+            {
+
+                List<BookingAuditLog> historial = await AuditService.getBookingAudit(res.reservation_id);
+
+                var ventanaHistorial = new HistorialAuditoriaView();
+
+                ventanaHistorial.DataContext = new
+                {
+                    ReservationId = res.reservation_id,
+                    LogEntries = historial
+                };
+
+                ventanaHistorial.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"No se pudo obtener el historial: {ex.Message}", "Error de Conexión", MessageBoxButton.OK);
             }
         }
     }
