@@ -15,5 +15,7 @@ namespace Hotel_Pere_Maria.Models
         public string cp { get; set; }
         public string ciudad { get; set; }
         public string provincia { get; set; }
+        public int canMas7Dias { get; set; }
+        public int canMas3Dias { get; set; }
     }
 }

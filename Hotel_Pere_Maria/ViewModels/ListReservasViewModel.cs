@@ -63,6 +63,7 @@ namespace Hotel_Pere_Maria.ViewModels
         public ICommand SeleccionarRoomCommand { get;  }
         public ICommand GenerarFacturaCommand { get; }
         public ICommand VerHistorialCommand { get; }
+        public ICommand AjustesCancelacionCommand { get; }
 
         public ListReservasViewModel()
         {
@@ -72,6 +73,7 @@ namespace Hotel_Pere_Maria.ViewModels
             SeleccionarRoomCommand = new RelayCommand(ExecuteSeleccionarRoom);
             GenerarFacturaCommand = new RelayCommand<Reservation>(async (r) => await ExecuteGenerarFactura(r));
             VerHistorialCommand = new RelayCommand<Reservation>(async (r) => await ExecuteVerHistorial(r));
+            AjustesCancelacionCommand = new RelayCommand(ExecuteAJustesCancelacion);
 
             _ = CargarReservas(); // Carga inicial asíncrona
         }
@@ -150,6 +152,11 @@ namespace Hotel_Pere_Maria.ViewModels
             {
                 FiltroUser = selector.UsuarioSeleccionado.user_id;
             }
+        }
+
+        private void ExecuteAJustesCancelacion() {
+            AjustesCancelacion ajustescancelacion = new AjustesCancelacion();
+            ajustescancelacion.ShowDialog();
         }
 
         private void ExecuteSeleccionarRoom() {

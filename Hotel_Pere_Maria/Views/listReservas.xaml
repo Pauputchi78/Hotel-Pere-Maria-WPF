@@ -138,12 +138,11 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,5">
-            <StackPanel.Resources>
+        <Grid Grid.Row="3" Margin="0,15,0,5">
+            <Grid.Resources>
                 <Style TargetType="Button">
                     <Setter Property="Height" Value="38"/>
                     <Setter Property="Width" Value="140"/>
-                    <Setter Property="Margin" Value="10,0,0,0"/>
                     <Setter Property="Foreground" Value="White"/>
                     <Setter Property="FontWeight" Value="SemiBold"/>
                     <Setter Property="FontSize" Value="12"/>
@@ -153,22 +152,31 @@
                         </Style>
                     </Style.Resources>
                 </Style>
-            </StackPanel.Resources>
+            </Grid.Resources>
 
-            <Button Content="Ver Historial" 
-                    Background="#2C3E50"
-                    Command="{Binding VerHistorialCommand}"
-                    CommandParameter="{Binding ReservaSeleccionada}"/>
+            <Button Content="Ajustes cancelación" 
+            HorizontalAlignment="Left"
+            Background="#FFBD4A3E" 
+            Command="{Binding AjustesCancelacionCommand}"/>
 
-            <Button Content="Generar Factura" 
-                    Background="#3498DB"
-                    Command="{Binding GenerarFacturaCommand}"
-                    CommandParameter="{Binding ReservaSeleccionada}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Ver Historial" 
+                Background="#2C3E50"
+                Command="{Binding VerHistorialCommand}"
+                CommandParameter="{Binding ReservaSeleccionada}"/>
 
-            <Button Content="Modificar Reserva" 
-                    Background="#2ECC71"
-                    Command="{Binding ModificarReservaCommand}"
-                    CommandParameter="{Binding ReservaSeleccionada}"/>
-        </StackPanel>
+                <Button Content="Generar Factura" 
+                Background="#3498DB"
+                Margin="10,0,0,0"
+                Command="{Binding GenerarFacturaCommand}"
+                CommandParameter="{Binding ReservaSeleccionada}"/>
+
+                <Button Content="Modificar Reserva" 
+                Background="#2ECC71"
+                Margin="10,0,0,0"
+                Command="{Binding ModificarReservaCommand}"
+                CommandParameter="{Binding ReservaSeleccionada}"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
